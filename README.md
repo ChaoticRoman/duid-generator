@@ -1,34 +1,27 @@
 # DUID Generator
 
-If we want to use static IPv6 address reservation with DHCPv6,
-it is usually not working out of the box. Static reservation
-in DHCPv6 does not use directly a MAC address of the client.
-Instead, DHCPv6 relies on a different identifier called the DUID
-(DHCP Unique Identifier). There are four types of DUID and
-only two of them, Type 1 (DUID-LLT, derived from MAC address
-and time) and Type 3 (DUID-LL, derived from MAC address only).
+When configuring static IPv6 address reservations with DHCPv6, it often doesn't work out of the box.
 
-To be able to use static IPv6 address reservation with DHCPv6,
-you should either
+Unlike DHCPv4, DHCPv6 does not directly use the client's MAC address. Instead, it relies on a different identifier known as the DUID (DHCP Unique Identifier). There are four types of DUIDs, but only two of them incorporate the client's MAC address:
 
-1. reserve it for your DUID directly, or
-2. reserve it for your MAC address and DUID-LL or DUID-LLT
-    derived from that MAC address.
+* **Type 1 (DUID-LLT)**: Derived from the MAC address and a timestamp.
+* **Type 3 (DUID-LL)**: Derived solely from the MAC address.
 
-The second choice is popular with routers I work with. If you
-use `dhcpcd` and `Ubuntu`, put your new DUID
-to `/var/lib/dhcpcd/duid` and restart `dhcpcd` and NetworkManager:
+To successfully use static IPv6 address reservations with DHCPv6, you have two options:
 
-```
+1. Reserve the address for your DUID directly, or
+2. Reserve the address for your MAC address and configure your DHCP client to use either a DUID-LL or DUID-LLT derived from that MAC address.
+
+The second option is commonly used with the routers I work with. If you're using `dhcpcd` on `Ubuntu`, you can set your new DUID by placing it in `/var/lib/dhcpcd/duid` and then restarting `dhcpcd` and NetworkManager:
+
+```bash
 sudo systemctl restart dhcpcd
 sudo systemctl restart NetworkManager
 ```
 
-Here are functions provided functions to generate these with
-simple usage example. Inspired by [this discussion] with
-`dhcpcd` maintainers.
+This repository provides functions to generate these DUIDs, along with a simple usage example. The implementation was inspired by [this discussion] with the `dhcpcd` maintainers.
 
-## Reference:
+## References
 
 * [RFC 3315]
 
